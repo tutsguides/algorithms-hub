@@ -4,51 +4,61 @@
 
 using namespace std;
 
-// Comparison function to sort activities by their finish time (second element of each interval)
-bool compare(const vector<int> &a, const vector<int> &b) {
-    return a[1] < b[1];
+// Represents an activity with a start time `l` and finish time `r`.
+struct activity {
+    int l; // start time
+    int r; // finish time
+};
+
+// Comparison function: orders activities by increasing finish time (`r`).
+bool compare(const activity &a, const activity &b) {
+    return a.r < b.r;
 }
 
-// Solves the Activity Selection Problem using a greedy strategy.
-// Given a list of intervals [start, finish], returns the largest set of non-overlapping intervals.
-vector<vector<int> > solveActivitySelectionProblem(vector<vector<int> > &intervals) {
-    // If there are zero or one intervals, they are trivially the solution
-    if (intervals.size() <= 1)
-        return intervals;
+// Greedy solver for the Activity Selection Problem.
+// Takes a list of activities and returns the maximum-size subset of non-overlapping activities.
+vector<activity> solveActivitySelectionProblem(vector<activity> &activities) {
+    // Trivial cases: zero or one activity is already optimal.
+    if (activities.size() <= 1)
+        return activities;
 
-    // Sort all intervals in ascending order of their finish times
-    sort(intervals.begin(), intervals.end(), compare);
+    // Sort activities so the one that finishes earliest comes first.
+    sort(activities.begin(), activities.end(), compare);
 
-    // This will hold our selected (non-overlapping) intervals
-    vector<vector<int> > selected_intervals;
+    // Container for the chosen non-overlapping activities.
+    vector<activity> selected_activities;
+    // Always select the first (earliest-finishing) activity.
+    selected_activities.push_back(activities[0]);
+    // Keep track of when the last selected activity finishes.
+    int last_finish_time = activities[0].r;
 
-    // Always pick the first interval after sorting
-    selected_intervals.push_back(intervals[0]);
-    // Track the finish time of the last selected interval
-    int last_finish_time = intervals[0][1];
-
-    // Iterate over the remaining intervals
-    for (size_t i = 1; i < intervals.size(); ++i) {
-        // If the current interval starts after or exactly when the last selected one finishes
-        if (intervals[i][0] >= last_finish_time) {
-            // Select it
-            selected_intervals.push_back(intervals[i]);
-            // Update the last finish time
-            last_finish_time = intervals[i][1];
+    // Iterate through the rest of the activities.
+    for (size_t i = 1; i < activities.size(); ++i) {
+        // If the next activity starts at or after the last finish time, select it.
+        if (activities[i].l >= last_finish_time) {
+            selected_activities.push_back(activities[i]);
+            last_finish_time = activities[i].r;
         }
     }
 
-    // Return the maximal set of non-overlapping intervals
-    return selected_intervals;
+    // Return the optimal set of non-overlapping activities.
+    return selected_activities;
 }
 
 int main() {
-    vector<vector<int> > intervals = {
-        {1, 4}, {3, 5}, {0, 6}, {5, 7}, {3, 9}, {5, 9}, {6, 10}, {8, 11}, {8, 12}, {2, 14}, {12, 16}
+    // Sample list of activities (start, finish)
+    vector<activity> activities = {
+        {1, 4}, {3, 5}, {0, 6},
+        {5, 7}, {3, 9}, {5, 9},
+        {6, 10}, {8, 11}, {8, 12},
+        {2, 14}, {12, 16}
     };
 
-    auto selected_intervals = solveActivitySelectionProblem(intervals);
+    // Compute and print the selected activities
+    auto selected_intervals = solveActivitySelectionProblem(activities);
     for (const auto &interval: selected_intervals) {
-        cout << interval[0] << ", " << interval[1] << "\n";
+        cout << interval.l << ", " << interval.r << "\n";
     }
+
+    return 0;
 }
