@@ -1,4 +1,7 @@
+package test;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -28,7 +31,7 @@ public class ActivitySelection {
             return activities;
 
         // Sort activities by finish time
-        activities.sort(compareByFinishTime);
+        Collections.sort(activities, compareByFinishTime);
 
         List<Activity> selectedActivities = new ArrayList<>();
         selectedActivities.add(activities.get(0)); // Select the first activity
