@@ -1,3 +1,5 @@
+package test;
+
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -6,11 +8,11 @@ import java.util.PriorityQueue;
 
 public class Huffman {
     // Node represents a node in the Huffman tree
-    static class Node implements Comparable<Huffman.Node> {
+    static class Node implements Comparable<Node> {
         char symbol; // The character (symbol) stored in this node; '\0' for internal nodes
         int freq; // Frequency (weight) of this node/subtree
-        Huffman.Node left; // Pointer to left child (represents '0' bit)
-        Huffman.Node right; // Pointer to right child (represents '1' bit)
+        Node left; // Pointer to left child (represents '0' bit)
+        Node right; // Pointer to right child (represents '1' bit)
 
         // Constructor for leaf nodes
         Node(char symbol, int freq) {
@@ -20,7 +22,7 @@ public class Huffman {
         }
 
         // Constructor for internal nodes: merge two subtrees
-        Node(Huffman.Node left, Huffman.Node right) {
+        Node(Node left, Node right) {
             this.symbol = '\0';
             this.freq = left.freq + right.freq;
             this.left = left;
@@ -28,13 +30,13 @@ public class Huffman {
         }
 
         @Override
-        public int compareTo(Huffman.Node other) {
+        public int compareTo(Node other) {
             return Integer.compare(this.freq, other.freq);
         }
     }
 
     // Builds the Huffman tree from input data string
-    public static Huffman.Node buildHuffmanTree(String data) {
+    public static Node buildHuffmanTree(String data) {
         // Count frequency of each character in the data
         Map<Character, Integer> freq = new HashMap<>();
         for (char ch : data.toCharArray()) {
@@ -42,21 +44,21 @@ public class Huffman {
         }
 
         // Min-priority queue to select two nodes with lowest frequency
-        PriorityQueue<Huffman.Node> pq = new PriorityQueue<>();
+        PriorityQueue<Node> pq = new PriorityQueue<>();
 
         // Create a leaf node for each unique character and add to queue
         for (Map.Entry<Character, Integer> entry : freq.entrySet()) {
-            pq.add(new Huffman.Node(entry.getKey(), entry.getValue()));
+            pq.add(new Node(entry.getKey(), entry.getValue()));
         }
 
         // Merge nodes until only the root remains
         while (pq.size() > 1) {
             // Extract two nodes with smallest frequencies
-            Huffman.Node left = pq.poll();
-            Huffman.Node right = pq.poll();
+            Node left = pq.poll();
+            Node right = pq.poll();
 
             // Create a new parent node with combined frequency
-            pq.add(new Huffman.Node(left, right));
+            pq.add(new Node(left, right));
         }
 
         // The remaining node is the root of the Huffman tree
@@ -64,7 +66,7 @@ public class Huffman {
     }
 
     // Recursively generate Huffman codes from the tree
-    public static void generateCodes(Huffman.Node node, String prefix, Map<Character, String> codebook) {
+    public static void generateCodes(Node node, String prefix, Map<Character, String> codebook) {
         if (node == null) return;
 
         if (node.symbol != '\0') {
@@ -84,7 +86,7 @@ public class Huffman {
         String text = "AAABBBBBAAABBDDCCCCCDDDDBBAAAAAAAAAAACCCCAAAEEEEAAADDDAADAAAABBAADDACCACAAAAEEEBBEEAAAADDDDAA";
 
         // Build Huffman tree based on character frequencies
-        Huffman.Node root = buildHuffmanTree(text);
+        Node root = buildHuffmanTree(text);
 
         // Generate the codebook (mapping from char to codeword)
         Map<Character, String> codes = new HashMap<>();
