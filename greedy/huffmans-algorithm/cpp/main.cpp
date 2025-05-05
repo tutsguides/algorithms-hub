@@ -1,4 +1,5 @@
 #include <iostream>
+#include <map>
 #include <string>
 #include <memory>
 #include <queue>
@@ -67,7 +68,7 @@ shared_ptr<Node> buildHuffmanTree(const string &data) {
 // Recursively generate Huffman codes from the tree
 void generateCodes(const shared_ptr<Node> &node,
                    const string &prefix,
-                   unordered_map<char, string> &codebook) {
+                   map<char, string> &codebook) {
     if (!node) return;
 
     // If this is a leaf node, assign the code (use "0" if only one symbol)
@@ -88,7 +89,7 @@ int main() {
     auto root = buildHuffmanTree(text);
 
     // Generate the codebook (mapping from char to codeword)
-    unordered_map<char, string> codes;
+    map<char, string> codes;
     generateCodes(root, "", codes);
 
     // Output the resulting Huffman codes
