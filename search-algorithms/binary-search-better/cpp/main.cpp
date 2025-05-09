@@ -7,22 +7,24 @@ class BinarySearch {
 public:
     int search(const vector<int> &nums, int key) {
         int n = int(nums.size());
-        int low = 0; // last index with nums[low] < key
-        int high = n-1; // first index with nums[high] >= key
+        int low = -1;
+        int high = n;
 
-        while (low <= high) {
+        while (high > low + 1) {
             int mid = low + (high - low) / 2;
 
-            if (key == nums[mid])
-                return mid; // found
-
-            if (key < nums[mid])
-                high = mid - 1; // search left half
-            else
-                low = mid + 1; // search right half
+            if (nums[mid] >= key) {
+                high = mid;
+            } else {
+                low = mid;
+            }
         }
 
-        return -1; // not found
+        if (high != n && nums[high] == key) {
+            return high;
+        }
+
+        return -1;
     }
 };
 
